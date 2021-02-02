@@ -5,7 +5,7 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.AkMo03</groupId>
+    <groupId>com.github.akmo03</groupId>
     <artifactId>SonarCloudUrl-maven-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
@@ -17,7 +17,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-    <name>Sample Parameter-less Maven Plugin</name>
+    <name>Plugin to add SonarCloud Dashboard Link at project-reports</name>
 
     <dependencies>
         <!-- reporting API -->
