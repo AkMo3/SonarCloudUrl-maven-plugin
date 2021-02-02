@@ -1,4 +1,4 @@
-package com.github.AkMo03;
+package com.github.akmo03;
 
 import java.util.Locale;
 
