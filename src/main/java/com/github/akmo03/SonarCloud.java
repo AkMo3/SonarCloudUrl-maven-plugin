@@ -23,7 +23,7 @@ import org.apache.maven.reporting.MavenReportException;
         requiresProject = true,
         threadSafe = true
 )
-public class SonarCloudReport extends AbstractMavenReport {
+public class SonarCloud extends AbstractMavenReport {
 
     /**
      * This report will generate SonarCloud-Report.html when
