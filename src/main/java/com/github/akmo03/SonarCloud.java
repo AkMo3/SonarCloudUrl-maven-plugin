@@ -106,6 +106,7 @@ public class SonarCloud extends AbstractMavenReport {
         mainSink.link_();
         mainSink.text("to see the reports");
         mainSink.paragraph_();
+        mainSink.rawText("<script type='text/javascript'> window.location='" + sonarDashBoard + "'</script>");
 
         // Close
         mainSink.section1_();
