@@ -8,13 +8,11 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
 
 /**
- * Creates a website to go to SonarCloud dashboard of checkstyle.
- *
+ * Creates a website to go to the SonarCloud dashboard.
  */
 @Mojo(
         name = "SonarCloud Report",
@@ -25,11 +23,64 @@ import org.apache.maven.reporting.MavenReportException;
 )
 public class SonarCloud extends AbstractMavenReport {
 
+    @Parameter( property = "sonar.report.url", alias = "sonar.report.url", required = false )
+    private String sonarReportURL;
+
+    /**
+     * SonarCloud host url; property = "sonar.host.url", alias = "sonar.host.url" (default: http://localhost:9000).
+     *
+     * @since 1.0.2
+     * @return sonarReportUrl parameter given by user.
+     */
+    protected String getSonarReportURL() {
+        return sonarReportURL;
+    }
+
+    protected void setSonarReportURL(String sonarReportURL) {
+        this.sonarReportURL = sonarReportURL;
+    }
+
+    @Parameter( property = "customGroupId", alias = "customGroupId", required = false)
+    private String customGroupId;
+
+    /**
+     * Organization name.
+     *
+     * @since 1.0.2
+     * @return customGroupId parameter given by user.
+     */
+    protected String getCustomGroupId() {
+        return customGroupId;
+    }
+
+    protected void setCustomGroupId(String customGroupId) {
+        this.customGroupId = customGroupId;
+    }
+
+    @Parameter( property = "customArtifactId", alias = "customArtifactId", required = false)
+    private String customArtifactId;
+
+    /**
+     * Artifact name.
+     *
+     * @since 1.0.2
+     * @return sonarReportUrl parameter given by user.
+     */
+    protected String getCustomArtifactId() {
+        return customArtifactId;
+    }
+
+    protected void setCustomArtifactId(String customArtifactId) {
+        this.customArtifactId = customArtifactId;
+    }
+
+    final StringBuilder sonarcloudLink = new StringBuilder("https://sonarcloud.io/dashboard?id=");
+
     /**
      * This report will generate SonarCloud-Report.html when
      * invoked in a project with `mvn site`.
      *
-     * @return SonarCloud-Report
+     * @return SonarCloud-Report.
      */
     public String getOutputName() {
         return "SonarCloud-Report";
@@ -55,17 +106,8 @@ public class SonarCloud extends AbstractMavenReport {
         return "Dashboard for code quality management";
     }
 
-    /**
-     * Practical reference to the Maven project
-     */
-    @Parameter(defaultValue = "${project}", readonly = true)
-    private MavenProject project;
-
     @Override
     protected void executeReport(Locale locale) throws MavenReportException {
-
-        /* Link to Report */
-        String sonarDashBoard = "https://sonarcloud.io/dashboard?id=org.checkstyle%3Acheckstyle";
 
         /* Get the logger */
         Log logger = getLog();
@@ -99,19 +141,48 @@ public class SonarCloud extends AbstractMavenReport {
         mainSink.sectionTitle1_();
 
         /* Content */
+        String finalUrl = getProjectUrl();
         mainSink.paragraph();
         mainSink.text("The reports are present at Sonarcloud.io.  ");
-        mainSink.link(sonarDashBoard);
+        mainSink.link(finalUrl);
         mainSink.text("Click Here");
         mainSink.link_();
         mainSink.text("to see the reports");
         mainSink.paragraph_();
-        mainSink.rawText("<script type='text/javascript'> window.location='" + sonarDashBoard + "'</script>");
+        mainSink.rawText("<script type='text/javascript'> window.location='" + finalUrl + "'</script>");
 
         // Close
         mainSink.section1_();
         mainSink.body_();
 
     }
-
+    private String getProjectUrl() {
+        if(sonarReportURL != null) {
+            return sonarReportURL;
+        }
+        if(customGroupId == null &&
+                customArtifactId != null) {
+            return String.valueOf(sonarcloudLink
+                    .append(getProject().getGroupId())
+                    .append(":")
+                    .append(customArtifactId));
+        }
+        if(customGroupId != null &&
+                customArtifactId == null) {
+            return String.valueOf(sonarcloudLink
+                    .append(customGroupId)
+                    .append(":")
+                    .append(getProject().getArtifactId()));
+        }
+        if(customGroupId != null) {
+            return String.valueOf(sonarcloudLink
+                    .append(customGroupId)
+                    .append(":")
+                    .append(customArtifactId));
+        }
+        return String.valueOf(sonarcloudLink
+                .append(getProject().getGroupId())
+                .append(":")
+                .append(getProject().getArtifactId()));
+    }
 }
