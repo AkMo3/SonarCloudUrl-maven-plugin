@@ -25,6 +25,30 @@ import org.apache.maven.reporting.MavenReportException;
 )
 public class SonarCloud extends AbstractMavenReport {
 
+    @Parameter( property = "sonar.report.url", defaultValue = "http://localhost:9000", alias = "sonar.report.url", required = true )
+    private String sonarReportURL;
+
+    /**
+     * SonarCloud host url; property = "sonar.host.url", alias = "sonar.host.url" (default: http://localhost:9000).
+     *
+     * @since 1.0.2
+     */
+    protected String getSonarHostURL() {
+        return sonarReportURL;
+    }
+
+    @Parameter( property = "org.name", defaultValue = "${groupId}",alias = "org.name", required = false)
+    private String orgName;
+
+    /**
+     * Organization name.
+     *
+     * @since 1.0.2
+     */
+    protected String getOrgName() {
+        return orgName;
+    }
+
     /**
      * This report will generate SonarCloud-Report.html when
      * invoked in a project with `mvn site`.
