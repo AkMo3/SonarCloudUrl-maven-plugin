@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.apache.maven.reporting</groupId>
             <artifactId>maven-reporting-api</artifactId>
-            <version>3.0</version>
+            <version>3.1.0</version>
         </dependency>
 
         <!-- plugin API and plugin-tools -->
